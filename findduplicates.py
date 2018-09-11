@@ -11,6 +11,8 @@ def findDup(parentFolder):
         for filename in fileList:
             # Get the path to the file
             path = os.path.join(dirName, filename)
+            if os.path.islink(path):
+                continue
             # Calculate hash
             file_hash = hashfile(path)
             # Add or append the file path
@@ -44,11 +46,13 @@ def hashfile(path, blocksize = 65536):
 def printResults(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
-        print('Duplicates Found:')
+        print('Duplicates files are grouped together below. Files with different content are separated by ### header')
         for result in results:
+            group = []
             for subresult in result:
-                masterdups.append(subresult)
-        print(masterdups)    
+                group.append(subresult)
+            print(group)
+            print('###')
  
     else:
         print('No duplicate files found.')
@@ -57,7 +61,6 @@ def printResults(dict1):
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         dups = {}
-        masterdups = []
         folder = sys.argv[1:]
         
         for i in folder:
