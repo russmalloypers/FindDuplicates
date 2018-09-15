@@ -12,12 +12,14 @@ def findDup(parentFolder):
             # Get the path to the file
             path = os.path.join(dirName, filename)
             
-            #Check how many times the file is found in file_sizes list
-            
-            
             # Ignore symbolic links
             if os.path.islink(path):
                 continue
+            
+            # Check how many times the file is found in file_sizes list
+            if file_sizes.count(os.path.getsize(path)) == 1:
+                continue
+            
             # Calculate hash
             file_hash = hashfile(path)
             # Add or append the file path
@@ -63,7 +65,7 @@ def printResults(dict1):
         print('No duplicate files found.')
 
 def create_byte_list(parentFolder):
-    print("Generating byte list")
+    print('Generating byte list')
     for dirName, subdirs, fileList in os.walk(parentFolder):
         for filename in fileList:
             # Get the path to the file
@@ -73,9 +75,8 @@ def create_byte_list(parentFolder):
             if os.path.islink(path):
                 continue
             
-            # Calculate file sizes
+            # Calculate file sizes and add to file_sizes
             file_sizes.append(os.path.getsize(path))
-    print(file_sizes)
     return
     
  
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         dups = {}
         folder = sys.argv[1:]
         
-        #This for loop creates a global list called file_sizes
+        # Creates a global list called file_sizes
         for i in folder:
             # Iterate the folders given
             if os.path.exists(i):
@@ -93,11 +94,12 @@ if __name__ == '__main__':
                 print('%s is not a valid path, please verify' % i)
                 sys.exit()
         
-        #This for loop finds the duplicates
+        # Finds duplicates
         for i in folder:
             #Find the duplicated files and append them to the dups
             joinDicts(dups, findDup(i))
-            
+        
+        #Print the results    
         printResults(dups)
     else:
         print('Instructions: python findduplicates.py folder')
