@@ -61,23 +61,43 @@ def printResults(dict1):
  
     else:
         print('No duplicate files found.')
- 
+
+def create_byte_list(parentFolder):
+    print("Generating byte list")
+    for dirName, subdirs, fileList in os.walk(parentFolder):
+        for filename in fileList:
+            # Get the path to the file
+            path = os.path.join(dirName, filename)
+            
+            # Ignore symbolic links
+            if os.path.islink(path):
+                continue
+            
+            # Calculate file sizes
+            file_sizes.append(os.path.getsize(path))
+    print(file_sizes)
+    return
+    
  
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         dups = {}
         folder = sys.argv[1:]
         
-        #create global list file_sizes
-        
+        #This for loop creates a global list called file_sizes
         for i in folder:
             # Iterate the folders given
             if os.path.exists(i):
-                # Find the duplicated files and append them to the dups
-                joinDicts(dups, findDup(i))
+                create_byte_list(i)
             else:
                 print('%s is not a valid path, please verify' % i)
                 sys.exit()
+        
+        #This for loop finds the duplicates
+        for i in folder:
+            #Find the duplicated files and append them to the dups
+            joinDicts(dups, findDup(i))
+            
         printResults(dups)
     else:
         print('Instructions: python findduplicates.py folder')
