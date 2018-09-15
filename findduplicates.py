@@ -1,7 +1,7 @@
 import os, sys
 import hashlib
 
-
+file_sizes = []
 
 def findDup(parentFolder):
     # Duplicates in format {hash:[names]} 
@@ -11,6 +11,11 @@ def findDup(parentFolder):
         for filename in fileList:
             # Get the path to the file
             path = os.path.join(dirName, filename)
+            
+            #Check how many times the file is found in file_sizes list
+            
+            
+            # Ignore symbolic links
             if os.path.islink(path):
                 continue
             # Calculate hash
@@ -62,6 +67,8 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         dups = {}
         folder = sys.argv[1:]
+        
+        #create global list file_sizes
         
         for i in folder:
             # Iterate the folders given
